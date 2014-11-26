@@ -1,0 +1,218 @@
+<?php
+/**
+ * Implements hook_preprocess_html().
+ */
+function drupal_way_meta_tags_preprocess_html(&$variables) {
+  global $theme_key;
+
+  if ($theme_key == 'drupal_way' || $theme_key == 'bartik') {
+    global $language;
+    $description = array(
+      'ru' => 'Разработка сайтов на CMS / CMF Drupal. Drupal Way. Как стать Друпал ниндзя. Разработка кастомных модулей или тем. Примеры кода и обзор контриб модулей. Разбор хуков и Drupal API. Прочие полезности по Drupal в целом.',
+      'en' => 'Developing sites by CMS / CMF Drupal. Drupal Way. How to become a Drupal ninja. Developing custom modules and themes. Drupal demo code examples and review contrib modules. Review Drupal hooks and Drupal API. Another usefulness of Drupal.'
+    );
+    // Meta Tags For Home Page.
+    if (drupal_is_front_page()) {
+      $taxonomy_term = taxonomy_vocabulary_machine_name_load('tags');
+
+      if (isset($taxonomy_term->vid)) {
+        $taxonomy_term_tree = taxonomy_get_tree($taxonomy_term->vid);
+        $keywords = array();
+
+        if (!empty($taxonomy_term_tree)) {
+          foreach ($taxonomy_term_tree as $keywords_value) {
+            $keywords[] = $keywords_value->name;
+          }
+          // Keywords.
+          drupal_add_html_head(array(
+            '#type' => 'html_tag',
+            '#tag' => 'meta',
+            '#attributes' => array(
+              'name' => 'keywords',
+              'content' => implode(',', $keywords),
+            )
+          ), 'drupal_way_meta_tags_keywords');
+        }
+      }
+      // Meta Tag  Description.
+      drupal_add_html_head(array(
+        '#type' => 'html_tag',
+        '#tag' => 'meta',
+        '#attributes' => array(
+          'name' => 'description',
+          'content' => $description[$language->prefix],
+        )
+      ), 'drupal_way_meta_tags_description');
+      // Meta Tag Published Front page.
+      // Get last Published Node.
+      $query = db_select('node', 'n')
+        ->fields('n', array('changed'))
+        ->condition('n.status', NODE_PUBLISHED)
+        ->orderBy('n.changed', 'DESC')
+        ->execute()
+        ->fetchField();
+
+      drupal_add_html_head(array(
+        '#type' => 'html_tag',
+        '#tag' => 'meta',
+        '#attributes' => array(
+          'name' => 'published',
+          'content' => format_date($query, 'drupal_how_to'),
+        )
+      ), 'drupal_way_meta_tags_published');
+    }
+    // END Meta Tags For Home Page.
+    // Meta Tag "yandex-verification".
+    drupal_add_html_head(array(
+      '#type' => 'html_tag',
+      '#tag' => 'meta',
+      '#attributes' => array(
+      'name' => 'yandex-verification',
+        'content' => '6799a112561e3883',
+      ),
+    ), 'drupal_way_meta_tags_yandex_verification');
+    // Content-language.
+    drupal_add_html_head(array(
+      '#type' => 'html_tag',
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'http-equiv' => 'Content-language',
+        'content' => $language->prefix,
+      )
+    ), 'drupal_way_meta_tags_language');
+    // Hreflang.
+    drupal_add_html_head(array(
+      '#tag' => 'link',
+      '#attributes' => array(
+        'hreflang' => $language->prefix,
+        'rel' => 'alternate',
+      ),
+    ), 'drupal_way_meta_tags_hreflang');
+    // Meta Tag  Image.
+    $image = 'http://drupal-way.org/sites/all/themes/drupal_way/images/dw_icon.png';
+    if (arg(0) == 'node' && is_numeric(arg(1))) {
+      $node = node_load(arg(1));
+      if (isset($node->type) && $node->type == 'drupal_how_to') {
+        $image_wrapper = entity_metadata_wrapper('node', $node);
+        $image = $image_wrapper->field_druapl_how_to_img_min->value();
+        if (!empty($image)) {
+          $image = file_create_url($image['uri']);
+        }
+      }
+    }
+    if (arg(0) == 'taxonomy' && arg(1) == 'term' && is_numeric(arg(2))) {
+      $taxonomy_term = taxonomy_term_load(arg(2));
+      if (isset($taxonomy_term->vocabulary_machine_name) && $taxonomy_term->vocabulary_machine_name == 'tags') {
+        $image_wrapper = entity_metadata_wrapper('taxonomy_term', $taxonomy_term);
+        $image = $image_wrapper->field_tags_image->value();
+        if (!empty($image)) {
+          $image = file_create_url($image['uri']);
+        }
+      }
+    }
+
+    drupal_add_html_head(array(
+      '#type' => 'html_tag',
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'property' => 'og:image',
+        'content' => $image,
+      )
+    ), 'drupal_way_meta_tags_og_image');
+    drupal_add_html_head(array(
+      '#type' => 'html_tag',
+      '#tag' => 'link',
+      '#attributes' => array(
+        'rel' => 'image_src',
+        'href' => $image,
+      )
+    ), 'drupal_way_meta_tags_image_src');
+  }
+}
+
+/**
+ * Implements hook_preprocess_node().
+ */
+function drupal_way_meta_tags_preprocess_node(&$variable) {
+  $variable['date'] = format_date($variable['created'], 'drupal_how_to');
+
+  if ($variable['changed'] / $variable['created'] != 1) {
+    $variable['date'] = format_date($variable['created'], 'drupal_how_to_and_time');
+    $variable['date'] .= ' / ' . format_date($variable['changed'], 'drupal_how_to_and_time');
+  }
+  // Meta Tag Published.
+  drupal_add_html_head(array(
+    '#type' => 'html_tag',
+    '#tag' => 'meta',
+    '#attributes' => array(
+      'name' => 'published',
+      'content' => format_date($variable['created'], 'drupal_how_to'),
+    )
+  ), 'drupal_way_node_keywords');
+}
+
+/**
+ * Implements hook_html_head_alter().
+ */
+function drupal_way_meta_tags_html_head_alter(&$head_elements) {
+  global $theme_key;
+
+  if ($theme_key == 'drupal_way' || $theme_key == 'bartik') {
+    $head_elements['system_meta_content_type']['#attributes'] = array(
+      'charset' => 'UTF-8'
+    );
+
+     if (isset($head_elements['og:description']['#attributes']['content'])) {
+      $head_elements['og:description']['#attributes']['content'] = strip_tags($head_elements['og:description']['#attributes']['content'], '<br> <strong> <u> <em>');
+     }
+  }
+}
+/**
+ * Implements hook_preprocess_page().
+ */
+function drupal_way_meta_tags_preprocess_page(&$variables) {
+  $arg = arg();
+  if (isset($arg[0]) && $arg[0] == 'demo' && isset($arg[1])) {
+    $node = node_load(end($arg));
+    if ($node) {
+      global $language;
+      // Set breadcrumb
+      $breadcrumb = array(
+        l(t('Home'), '<front>', array('language' => $language)),
+        l(t('Demo'), 'demo', array('language' => $language)),
+        l($node->title, 'node/' . $node->nid, array('language' => $language)),
+      );
+      drupal_set_breadcrumb($breadcrumb);
+      // Keywords.
+      if (!empty($node->field_tags[LANGUAGE_NONE])) {
+        $tags = array();
+        foreach ($node->field_tags[LANGUAGE_NONE] as $tag) {
+          $tags[] = $tag['tid'];
+        }
+
+        $taxonomy_terms = taxonomy_term_load_multiple($tags);
+        $keywords = array();
+        foreach ($taxonomy_terms as $keywords_value) {
+           $keywords[] = $keywords_value->name;
+        }
+        drupal_add_html_head(array(
+          '#type' => 'html_tag',
+          '#tag' => 'meta',
+          '#attributes' => array(
+            'name' => 'keywords',
+            'content' => implode(',', $keywords),
+          )
+        ), 'drupal_way_meta_tags_keywords');
+      }
+      // Description
+      drupal_add_html_head(array(
+        '#type' => 'html_tag',
+        '#tag' => 'meta',
+        '#attributes' => array(
+          'name' => 'description',
+          'content' => isset($node->metatags[$node->language]['description']['value']) ? $node->metatags[$node->language]['description']['value'] : '',
+        )
+      ), 'drupal_way_meta_tags_description');
+    }
+  }
+}

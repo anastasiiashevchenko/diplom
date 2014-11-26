@@ -1,0 +1,266 @@
+<?php
+
+/**
+ * @file
+ * PBCKCode
+ * @todo: Add support for Highlight.js
+ */
+global $pbckcode_default_modes;
+$pbckcode_default_modes = array('html', 'css', 'php', 'javascript');
+
+/**
+ * Implements hook_permission().
+ */
+function pbckcode_permission() {
+  return array(
+    'configure pbckcode' => array(
+      'title' => t('Configure PBCKCode Settings'),
+      'description' => t('Configure PBCKCode settings.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function pbckcode_menu() {
+  $items = array();
+
+  $items['admin/config/content/pbckcode'] = array(
+    'title' => 'PBCKCode',
+    'description' => 'Configure PBCKCode display options.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pbckcode_admin'),
+    'access arguments' => array('configure pbckcode'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_ckeditor_plugin().
+ */
+function pbckcode_ckeditor_plugin() {
+  return array(
+    'pbckcode' => array(
+      'name' => 'pbckcode',
+      'desc' => t('PBCKCode plugin - Syntax Highlighting'),
+      'path' => libraries_get_path('pbckcode') . '/',
+      'buttons' => array(
+        'pbckcode' => array(
+          'icon' => 'icons/pbckcode.png',
+          'label' => 'Code',
+        ),
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_ckeditor_settings_alter().
+ */
+function pbckcode_ckeditor_settings_alter(&$settings) {
+  global $pbckcode_default_modes;
+  $cls   = variable_get('pbckcode_class', '');
+  $theme = variable_get('pbckcode_theme', '');
+  $modes_selected = variable_get('pbckcode_modes', $pbckcode_default_modes);
+  $highlighter = variable_get('pbckcode_highlight', '');
+
+  $pbckcode = array();
+
+  if ($cls !== '') {
+    $pbckcode['cls'] = $cls;
+  }
+  if ($theme !== '') {
+    $pbckcode['theme'] = $theme;
+  }
+
+  if ($modes_selected != $pbckcode_default_modes) {
+    $modes = pbckcode_list_modes();
+    $modes_selected = array_filter($modes_selected);
+    foreach ($modes as $key => $mode) {
+      if (isset($modes_selected[$key])) {
+        $js_modes[] = array($mode, $key);
+      }
+    }
+    $pbckcode['modes'] = $js_modes;
+  }
+
+  if ($highlighter !== '') {
+    $pbckcode['highlighter'] = $highlighter;
+  }
+
+  $settings['pbckcode'] = $pbckcode;
+}
+
+/**
+ * Page callback: PBCKCode Configuration.
+ *
+ * @see pbckcode_menu()
+ */
+function pbckcode_admin($form, &$form_state) {
+  global $pbckcode_default_modes;
+  $form['pbckcode_class'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Class'),
+    '#default_value' => variable_get('pbckcode_class', ''),
+    '#description' => t('An optional class to your pre tag.'),
+  );
+
+  $form['pbckcode_theme'] = array(
+    '#type' => 'select',
+    '#title' => t('Theme'),
+    '#options' => pbckcode_list_themes(),
+    '#default_value' => variable_get('pbckcode_theme', ''),
+    '#description' => t('The theme of the ACE Editor of the plugin.'),
+  );
+
+  $form['pbckcode_highlight'] = array(
+    '#type' => 'select',
+    '#title' => t('Syntax Highlighter'),
+    '#options' => pbckcode_list_highlights(),
+    '#default_value' => variable_get('pbckcode_highlight', ''),
+    '#description' => t('Select a supported highlighter from the modules you have installed.'),
+  );
+  if (count(pbckcode_list_highlights()) < 2) {
+    $form['pbckcode_highlight']['#disabled'] = TRUE;
+  }
+
+  $form['pbckcode_modes'] = array(
+    '#type' => 'checkboxes',
+    '#options' => pbckcode_list_modes(),
+    '#title' => t('Which languages are available'),
+    '#default_value' => variable_get('pbckcode_modes', $pbckcode_default_modes),
+    '#description' => t('Not all of these options may be supported by your chosen highlighter. Check the relevant documentation for more details.'),
+  );
+
+  $form['#attached'] = array(
+    'css' => array(
+      'type' => 'file',
+      'data' => drupal_get_path('module', 'pbckcode') . '/css/pbckcode.admin.css',
+    ),
+  );
+
+  return system_settings_form($form);
+}
+
+/**
+ * Helper function to return all syntax highlighting modes.
+ * @return array
+ *   List of highlighting syntaxes
+ */
+function pbckcode_list_modes() {
+  $modes = array(
+    'c_pp' => 'C/C++',
+    'c9search' => 'C9Search',
+    'clojure' => 'Clojure',
+    'coffee' => 'CoffeeScript',
+    'coldfusion' => 'ColdFusion',
+    'csharp' => 'C#',
+    'css' => 'CSS',
+    'diff' => 'Diff',
+    'glsl' => 'Glsl',
+    'golang' => 'Go',
+    'groovy' => 'Groovy',
+    'haxe' => 'Haxe',
+    'html' => 'HTML',
+    'jade' => 'Jade',
+    'java' => 'Java',
+    'javascript' => 'JavaScript',
+    'json' => 'JSON',
+    'jsp' => 'JSP',
+    'jsx' => 'JSX',
+    'latex' => 'LaTeX',
+    'less' => 'LESS',
+    'liquid' => 'Liquid',
+    'lua' => 'Lua',
+    'luapage' => 'LuaPage',
+    'markdown' => 'Markdown',
+    'ocaml' => 'OCaml',
+    'perl' => 'Perl',
+    'pgsql' => 'pgSQL',
+    'php' => 'PHP',
+    'powershell' => 'Powershell',
+    'python' => 'Python',
+    'ruby' => 'Ruby',
+    'scad' => 'OpenSCAD',
+    'scala' => 'Scala',
+    'scss' => 'SCSS/Sass',
+    'sh' => 'SH',
+    'sql' => 'SQL',
+    'svg' => 'SVG',
+    'tcl' => 'Tcl',
+    'text' => 'Text',
+    'textile' => 'Textile',
+    'xml' => 'XML',
+    'xq' => 'XQuery',
+    'yaml' => 'YAML',
+  );
+  return $modes;
+}
+
+/**
+ * Helper function to return syntax highlighting themes.
+ * @return array
+ *   Nested list of themes.
+ */
+function pbckcode_list_themes() {
+  $themes = array(
+    '' => '<None>',
+    'Bright Themes' => array(
+      'chrome' => 'Chrome',
+      'clouds' => 'Clouds',
+      'crimson_editor' => 'Crimson Editor',
+      'dawn' => 'Dawn',
+      'dreamweaver' => 'Dreamweaver',
+      'eclipse' => 'Eclipse',
+      'github' => 'GitHub',
+      'solarized_light' => 'Solarized Light',
+      'textmate' => 'Textmate',
+      'tomorrow' => 'Tomorrow',
+    ),
+    'Dark Themes' => array(
+      'clouds_midnight' => 'Clouds Midnight',
+      'cobalt' => 'Cobalt',
+      'idle_fingers' => 'Idle Fingers',
+      'kr_theme' => 'KR Theme',
+      'merbivore' => 'Merbivore',
+      'merbivore_soft' => 'Merbivore Soft',
+      'mono_industrial' => 'Mono Industrial',
+      'monokai' => 'Monokai',
+      'pastel_on_dark' => 'Pastel on Dark',
+      'solarized_dark' => 'Solarized Dark',
+      'tomorrow_night' => 'Tomorrow Night',
+      'tomorrow_night_blue' => 'Tomorrow Night (Blue)',
+      'tomorrow_night_bright' => 'Tomorrow Night (Bright)',
+      'tomorrow_night_eighties' => 'Tomorrow Night (Eighties)',
+      'twilight' => 'Twilight',
+      'vibrant_ink' => 'Vibrant Ink',
+    ),
+  );
+
+  return $themes;
+}
+
+/**
+ * Helper function to list supported syntax highlighters.
+ * @return array
+ *   List of highlighters currently installed
+ */
+function pbckcode_list_highlights() {
+  $highlights = array(
+    '' => 'No Highlighting',
+  );
+  if (module_exists('prettify')) {
+    $highlights['PRETTIFY'] = 'Google Code Prettifier';
+  }
+  if (module_exists('prism')) {
+    $highlights['PRISM'] = 'Prism';
+  }
+  // TODO: Add Highlight.js
+  if (module_exists('syntaxhighlighter')) {
+    $highlights['SYNTAX_HIGHLIGHTER'] = 'Syntax Highlighter';
+  }
+  return $highlights;
+}

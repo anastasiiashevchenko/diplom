@@ -1,0 +1,66 @@
+<?php
+/**
+ * @file
+ * Examples module file
+ */
+
+/**
+ * defines.
+ */
+define('DDW_TABLE_NODE_LIMIT', 5); // The limit of the node list
+define('DDW_TABLE_PAGER_QUANTITY', 7); // The number of pages in the list
+define('DDW_TEST_NODE_TYPE', 'test'); // The node type
+
+/**
+ * Implements hook_menu().
+ */
+function demo_drupal_way_menu() {
+  $items['demo/table/example'] = array(
+    'title' => 'Table Example',
+    'page callback' => 'demo_drupal_way_table_callback',
+    'access arguments' => array('demo drupal way'),
+    'type' => MENU_NORMAL_ITEM,
+    'menu_name' => 'menu-demo',
+    'file' => 'demo_drupal_way.page.table.inc',
+  );
+  $items['demo/jquery-ui/accordion'] = array(
+    'title' => 'Jquery UI Example',
+    'page callback' => 'demo_drupal_way_jquery_ui_accordion_callback',
+    'access arguments' => array('demo drupal way'),
+    'type' => MENU_NORMAL_ITEM,
+    'menu_name' => 'menu-demo',
+    'file' => 'demo_drupal_way.page.jquery_ui.accordion.inc',
+  );
+  $items['demo/ajax-add-more'] = array(
+    'title' => 'Ajax add more Example',
+    'access arguments' => array('demo drupal way'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('demo_drupal_way_ajax_add_more_form'),
+    'type' => MENU_NORMAL_ITEM,
+    'menu_name' => 'menu-demo',
+    'file' => 'demo_drupal_way.page.ajax_add_more.inc',
+  );
+  $items['demo/hierarchical-select'] = array(
+    'title' => 'Hierarchical select Example',
+    'access arguments' => array('demo drupal way'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('demo_drupal_way_hierarchical_select_form'),
+    'type' => MENU_NORMAL_ITEM,
+    'menu_name' => 'menu-demo',
+    'file' => 'demo_drupal_way.page.hierarchical_selecte.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function demo_drupal_way_permission() {
+  return array(
+    'demo drupal way' =>  array(
+      'title' => t('Demo drupal way'),
+      'description' => t('Demo drupal way'),
+    ),
+  );
+}

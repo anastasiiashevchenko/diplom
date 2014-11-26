@@ -1,0 +1,16 @@
+/* Add multiple columns to the mode checkboxes. */
+#edit-pbckcode-modes {
+  overflow: hidden;
+}
+
+#edit-pbckcode-modes .form-type-checkbox {
+  width: 25%;
+  float: left;
+}
+
+/* Reduce the number of columns on smaller screens. */
+@media all and (max-width: 600px) {
+  #edit-pbckcode-modes .form-type-checkbox {
+    width: 50%;
+  }
+}

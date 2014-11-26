@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * @file
+ * PBCKCode Install File
+ * @todo: Add checking for Plugin versions
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function pbckcode_requirements($phase) {
+  $requirements = array();
+  // Ensure translations don't break during installation.
+  $t = get_t();
+
+  // Check PBCKCode is Installed.
+  if ($phase == 'runtime') {
+    $requirements['pbckcode'] = array(
+      'title' => $t('PBCKCode'),
+    );
+    if (libraries_get_path('pbckcode')) {
+      $requirements['pbckcode']['value'] = $t('The PBCKCode library is installed');
+    }
+    else {
+      $requirements['pbckcode']['value'] = $t('You need to install the PBCKCode Library');
+      $requirements['pbckcode']['severity'] = REQUIREMENT_ERROR;
+    }
+  }
+
+  return $requirements;
+}

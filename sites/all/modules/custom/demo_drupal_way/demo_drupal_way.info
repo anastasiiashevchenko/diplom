@@ -1,0 +1,5 @@
+name = Demo Drupal Way
+description = Example of modules
+package = Drupal Way
+core = 7.x
+version = 7.x-1.0
