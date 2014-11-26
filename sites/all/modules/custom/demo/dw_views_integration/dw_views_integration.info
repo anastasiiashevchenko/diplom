@@ -1,6 +1,0 @@
-name = Drupal Way: Views integration
-description = Add Views integration for a custom database table
-package = Drupal Way
-core = 7.x
-version = 7.x-1.0
-dependencies[] = views
