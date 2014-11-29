@@ -1,0 +1,6 @@
+name = Rent Cars Settings
+description = Rent Cars Settings
+package = Rent Cars
+core = 7.x
+version = 1.0
+dependencies[] = libraries

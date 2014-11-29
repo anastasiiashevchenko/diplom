@@ -1,0 +1,68 @@
+<?php
+/**
+ * Defines
+ */
+define('RENT_CARS_SETTINGS', 'rent_cars');
+/*$menu = menu_tree_output(menu_tree_all_data('main-menu'));
+print drupal_render($menu);*/
+/**
+ * Implements hook_init().
+ */
+function rent_cars_settings_init() {
+  global $base_url, $theme_key;
+
+  if ($theme_key == RENT_CARS_SETTINGS && drupal_is_front_page()) {
+    drupal_add_library('rent_cars_settings', 'nivo_slider');
+    drupal_add_js(drupal_get_path('module', 'rent_cars_settings') . '/js/rent_cars_settings_nivo_slider.js');
+  }
+/*  drupal_add_library('drupal_way', 'jquery_localscroll');
+  drupal_add_library('drupal_way', 'jquery_scrollto');
+  drupal_add_library('drupal_way', 'fancybox');
+  drupal_add_library('system', 'ui.accordion');*/
+  //drupal_add_library('system', 'effects.highlight');
+}
+
+/**
+ * Implements hook_library().
+ */
+function rent_cars_settings_library() {
+  $nivo_slider_path = libraries_get_path('nivo_slider');
+  $libraries['nivo_slider'] = array(
+    'title' => 'Nivo Slider',
+    'website' => 'https://github.com/gilbitron/Nivo-Slider',
+    'version' => '3.2',
+    'js' => array(
+      $nivo_slider_path . '/jquery.nivo.slider.pack.js' => array(),
+    ),
+    'css' => array(
+      $nivo_slider_path . '/nivo-slider.css' => array(),
+      $nivo_slider_path . '/themes/default/default.css' => array(),
+    ),
+    'dependencies' => array(
+      array('system', 'jquery'),
+    ),
+  );
+
+  return $libraries;
+}
+
+/**
+ *
+ */
+function rent_cars_settings_gallery($results = NULL) {
+  $output = '';
+  if (!empty($results)) {
+    foreach ($results as $result) {
+      if (isset($result->_field_data['nid']['entity'])) {
+        $output .= '<div id="' . $result->_field_data['nid']['entity']->type . '-' .  $result->_field_data['nid']['entity']->nid . '" class="nivo-html-caption">';
+      }
+      if (isset($result->field_body[0]['rendered']['#markup'])) {
+        $output .= $result->field_body[0]['rendered']['#markup'];
+      }
+      if (isset($result->_field_data['nid']['entity']) && isset($result->field_body[0]['rendered']['#markup'])) {
+        $output .= '</div>';
+      }
+    }
+  }
+  return $output;
+}
