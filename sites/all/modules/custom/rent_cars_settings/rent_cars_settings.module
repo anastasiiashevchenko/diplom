@@ -66,3 +66,40 @@ function rent_cars_settings_gallery($results = NULL) {
   }
   return $output;
 }
+
+/**
+ * @param null $node
+ * @param null $field
+ * @param null $image_style
+ * @return bool|string
+ */
+function rent_cars_settings_im_create_url($node = NULL, $field = NULL, $image_style = NULL) {
+
+  if (!empty($node) && !empty($field) && !empty($image_style)) {
+
+    $field_image = field_get_items('node', $node, $field);
+    $derivative_uri = '';
+
+    if (isset($field_image[0]['uri'])) {
+      $derivative_uri = image_style_path($image_style, $field_image[0]['uri']);
+      $image_style_source = image_style_load($image_style);
+
+      if (!file_exists($derivative_uri) && $image_style_source) {
+        image_style_create_derivative($image_style_source, $field_image[0]['uri'], $derivative_uri);
+      }
+    }
+
+    return file_create_url($derivative_uri);
+  }
+  return '';
+}
+
+function rent_cars_settings_get_field_value($node = NULL, $field = NULL) {
+  if (!empty($node) && !empty($field) && !empty($image_style)) {
+    $field_values = field_get_items('node', $node, $field);
+    if (isset($field_values[0]['value'])) {
+      return $field_values[0]['value'];
+    }
+  }
+  return '';
+}

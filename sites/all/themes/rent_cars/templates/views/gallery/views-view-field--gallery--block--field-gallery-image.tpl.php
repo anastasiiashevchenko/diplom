@@ -1,7 +1,7 @@
-<?php $htmlcaption = ''; ?>
-<?php $image = isset($row->field_field_gallery_image[0]['raw']['uri']) ? file_create_url($row->field_field_gallery_image[0]['raw']['uri']) : ''; ?>
-<?php $title = isset($row->_field_data['nid']['entity']->title) ? $row->_field_data['nid']['entity']->title : ''; ?>
-<?php if (isset($row->_field_data['nid']['entity'])): ?>
-  <?php $htmlcaption = '#' . $row->_field_data['nid']['entity']->type . '-' .  $row->_field_data['nid']['entity']->nid; ?>
+<?php if (function_exists('rent_cars_settings_im_create_url') && function_exists('rent_cars_settings_get_field_value') && isset($row->_field_data['nid']['entity'])): ?>
+  <?php $node = $row->_field_data['nid']['entity']; ?>
+  <?php $image = rent_cars_settings_im_create_url($node, 'field_gallery_image', 'gallery'); ?>
+  <?php $title = rent_cars_settings_get_field_value($node, 'title_field'); ?>
+  <?php $htmlcaption = '#' . $node->type . '-' .  $node->nid; ?>
+  <img src="<?php print $image; ?>" data-thumb="<?php print $image; ?>" alt="<?php print $title; ?>" title="<?php print $htmlcaption; ?>" />
 <?php endif; ?>
-<img src="<?php print $image; ?>" data-thumb="<?php print $image; ?>" alt="<?php print $title; ?>" title="<?php print $htmlcaption; ?>" />
