@@ -2,8 +2,10 @@
 /**
  * Implements theme_menu_link().
  */
-function rent_cars_menu_link($variables) {
-  $element = $variables['element'];
+
+function rent_cars_preprocess_menu_link($variables) {
+  dsm(4);
+  /*$element = $variables['element'];
   $sub_menu = '';
 
   if ($element['#below']) {
@@ -12,5 +14,5 @@ function rent_cars_menu_link($variables) {
   dsm($element['#href']);
 
   $output = l($element['#title'], $element['#href'], $element['#localized_options']);
-  return '<li' . drupal_attributes($element['#attributes']) . '>' . $output . $sub_menu . "</li>\n";
+  return '<li' . drupal_attributes($element['#attributes']) . '>' . $output . $sub_menu . "</li>\n";*/
 }
