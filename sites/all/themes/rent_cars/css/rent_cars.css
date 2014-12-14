@@ -1,0 +1,33 @@
+.field-name-field-product-images .slider-wrapper {
+
+}
+.node-product .commerce-product-field-field-product-images {
+  margin-bottom: 20px;
+}
+.node-product .field-name-body {
+  margin-top: 20px;
+}
+.node-product .field-name-field-product-products {
+  float: right;
+}
+.node-product .commerce-product-field-commerce-price {
+  display: inline-table;
+}
+.node-product .commerce-add-to-cart .form-submit {
+  margin: 0;
+}
+.node.node-product .field-name-commerce-price {
+  margin: 0;
+}
+.node-type-product table th,
+.node-type-product table td {
+  padding: 8px 15px;
+  vertical-align: middle;
+  font-size: 12px;
+}
+.node-type-product .view-produc-specifications {
+
+}
+#block-views-produc-specifications-block h2 {
+  text-align: center;
+}

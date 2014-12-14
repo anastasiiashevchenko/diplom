@@ -2,16 +2,15 @@
 /**
  * Defines
  */
-define('RENT_CARS_SETTINGS', 'rent_cars');
-/*$menu = menu_tree_output(menu_tree_all_data('main-menu'));
-print drupal_render($menu);*/
+define('RENT_CARS_SETTINGS_FRONT_THEME', 'rent_cars');
+
 /**
  * Implements hook_init().
  */
 function rent_cars_settings_init() {
-  global $base_url, $theme_key;
+  global $theme_key;
 
-  if ($theme_key == RENT_CARS_SETTINGS && drupal_is_front_page()) {
+  if ($theme_key == RENT_CARS_SETTINGS_FRONT_THEME && drupal_is_front_page()) {
     drupal_add_library('rent_cars_settings', 'nivo_slider');
     drupal_add_js(drupal_get_path('module', 'rent_cars_settings') . '/js/rent_cars_settings_nivo_slider.js');
   }
@@ -47,10 +46,30 @@ function rent_cars_settings_library() {
 }
 
 /**
+ * Implements hook_preprocess_node().
+ */
+function rent_cars_settings_preprocess_node(&$variable) {
+  //dsm($variable);
+  if ($variable['node']->type == 'product') {
+    drupal_add_library('rent_cars_settings', 'nivo_slider');
+    drupal_add_js(drupal_get_path('module', 'rent_cars_settings') . '/js/rent_cars_settings_nivo_slider.js');
+  }
+}
+
+/**
  * Implements hook_preprocess_field().
  */
 function rent_cars_settings_preprocess_field(&$variable) {
-  dsm($variable);
+  //dsm($variable);
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function rent_cars_settings_form_alter(&$form, &$form_state, $form_id) {
+  /*if (preg_match('/commerce_cart_add_to_cart_form_/', $form_id)) {
+    dsm($form);
+  }*/
 }
 
 /**

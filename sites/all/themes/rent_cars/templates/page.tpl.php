@@ -90,10 +90,10 @@
             <div id="main-navigation" class="clearfix">
               <nav role="navigation">
                 <?php if ($page['navigation']) :?>
-                <?php print render($page['navigation']); ?>
+                  <?php print render($page['navigation']); ?>
                 <?php else : ?>
                 <div id="main-menu">
-                <?php print theme('links__system_main_menu', array('links' => $main_menu, 'attributes' => array('class' => array('main-menu', 'menu'), ), 'heading' => array('text' => t('Main menu'), 'level' => 'h2', 'class' => array('element-invisible'), ), )); ?>
+                  <?php print theme('links__system_main_menu', array('links' => $main_menu, 'attributes' => array('class' => array('main-menu', 'menu'), ), 'heading' => array('text' => t('Main menu'), 'level' => 'h2', 'class' => array('element-invisible'), ), )); ?>
                 </div>
                 <?php endif; ?>
               </nav>

@@ -4,7 +4,7 @@ core = 7.x
 version = 1.0
 base theme = scholarly_lite
 
-;stylesheets[all][] = css/style.css
+stylesheets[all][] = css/rent_cars.css
 
 regions[header_top_left] = Header Top Left
 regions[header_top_right] = Header Top Right
