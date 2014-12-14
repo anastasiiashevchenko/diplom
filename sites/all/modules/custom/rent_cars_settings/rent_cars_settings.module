@@ -47,6 +47,13 @@ function rent_cars_settings_library() {
 }
 
 /**
+ * Implements hook_preprocess_field().
+ */
+function rent_cars_settings_preprocess_field(&$variable) {
+  dsm($variable);
+}
+
+/**
  *
  */
 function rent_cars_settings_gallery($results = NULL) {
