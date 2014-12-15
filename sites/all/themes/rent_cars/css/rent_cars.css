@@ -1,10 +1,7 @@
-.field-name-field-product-images .slider-wrapper {
-
-}
-.node-product .commerce-product-field-field-product-images {
+.node-type-product .commerce-product-field-field-product-images {
   margin-bottom: 20px;
 }
-.node-product .field-name-body {
+.node-type-product .field-name-body {
   margin-top: 20px;
 }
 .node-product .field-name-field-product-products {
@@ -13,7 +10,7 @@
 .node-product .commerce-product-field-commerce-price {
   display: inline-table;
 }
-.node-product .commerce-add-to-cart .form-submit {
+.node-type-product .commerce-add-to-cart .form-submit {
   margin: 0;
 }
 .node.node-product .field-name-commerce-price {
@@ -25,9 +22,63 @@
   vertical-align: middle;
   font-size: 12px;
 }
-.node-type-product .view-produc-specifications {
-
-}
 #block-views-produc-specifications-block h2 {
+  text-align: center;
+}
+.page-cars .commerce-product-field-field-product-images {
+  float: left;
+}
+.node-product-content-prop,
+.node-product-content-info {
+  content: "";
+  clear: both;
+}
+.node-product-content-prop .commerce-product-field {
+  float: left;
+  margin-right: 10px;
+}
+.field-name-body {
+  text-align: justify;
+}
+.page-cars .node-product {
+  padding: 0 17px 10px 17px;
+  -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+   -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+    box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  -webkit-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+   -moz-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+    box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+}
+.page-cars .field-name-field-product-images {
+  margin-right: 10px;
+  -moz-box-shadow: 0 0 3px #ccc;
+  -webkit-box-shadow: 0 0 3px #ccc;
+  box-shadow: 0 0 3px #ccc;
+}
+.view-cars .views-row {
+  margin-bottom: 20px;
+}
+.html .commerce-add-to-cart .form-item-quantity input.form-text {
+  text-align: center;
+}
+.commerce-add-to-cart .form-item-quantity .option {
+  margin-left: 15px
+}
+.region-sidebar-first .block-facetapi ul li {
+  list-style: none;
+}
+.region-sidebar-first .block-facetapi {
+   padding: 0 0 20px;
+}
+.region-sidebar-first .block-facetapi .facetapi-checkbox {
+  margin-right: 7px;
+}
+.rent-cars-reset-prise {
+  float: right;
+  margin-right: 0;
+}
+.view-commerce-cart-form .views-field-edit-quantity .form-text {
+  background: #FFF;
+  padding: 10px 0;
   text-align: center;
 }

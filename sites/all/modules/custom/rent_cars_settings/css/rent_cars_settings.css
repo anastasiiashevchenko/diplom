@@ -1,0 +1,11 @@
+/*body.administrator.toolbar #toolbar {
+  display: none;
+}
+body.administrator div#toolbar.toolbar {
+  top: 0;
+}
+body.administrator.toolbar {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+*/

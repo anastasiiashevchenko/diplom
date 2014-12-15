@@ -46,13 +46,32 @@ function rent_cars_settings_library() {
 }
 
 /**
+ * Implements hook_preprocess_html().
+ */
+function rent_cars_settings_preprocess_html(&$variable) {
+  $variable['classes_array'] = array_merge($variable['classes_array'], $variable['user']->roles);
+  if (!in_array('authenticated user', $variable['user']->roles) && arg(0) == 'cart') {
+    rent_cars_settings_redirect_anonymous();
+  }
+}
+
+/**
+ * Implements hook_preprocess_page().
+ */
+function rent_cars_settings_preprocess_page(&$variable) {
+  //dsm($variable);
+}
+
+/**
  * Implements hook_preprocess_node().
  */
 function rent_cars_settings_preprocess_node(&$variable) {
-  //dsm($variable);
+  $variable['theme_hook_suggestions'][] = 'node__' . $variable['type'] . '__' . $variable['view_mode'];
   if ($variable['node']->type == 'product') {
     drupal_add_library('rent_cars_settings', 'nivo_slider');
     drupal_add_js(drupal_get_path('module', 'rent_cars_settings') . '/js/rent_cars_settings_nivo_slider.js');
+   // $variable['title'] = 'qsqs';
+    //dsm($variable);
   }
 }
 
@@ -60,6 +79,8 @@ function rent_cars_settings_preprocess_node(&$variable) {
  * Implements hook_preprocess_field().
  */
 function rent_cars_settings_preprocess_field(&$variable) {
+  $variable['theme_hook_suggestions'][] = 'field__' . $variable['element']['#field_name'] . '__' . $variable['element']['#bundle'] . '__' . $variable['element']['#view_mode'];
+  //dsm($variable['theme_hook_suggestions']);
   //dsm($variable);
 }
 
@@ -67,9 +88,28 @@ function rent_cars_settings_preprocess_field(&$variable) {
  * Implements hook_form_alter().
  */
 function rent_cars_settings_form_alter(&$form, &$form_state, $form_id) {
-  /*if (preg_match('/commerce_cart_add_to_cart_form_/', $form_id)) {
-    dsm($form);
-  }*/
+  if (preg_match('/commerce_cart_add_to_cart_form_/', $form_id)) {
+    global $user;
+
+    if (!in_array('authenticated user', $user->roles)) {
+      $form['#submit'] = array('rent_cars_settings_redirect_anonymous');
+    }
+    $form['quantity']['#title'] = t('Day');
+    $form['quantity']['#title_display'] = 'after';
+  }
+  if ($form_id == 'commerce_order_ui_order_form') {
+
+  }
+  if ($form_id == 'search_api_ranges_block_slider_view_form_field_product_products:commerce_price:amount_decimal') {
+    unset($form['text-range']);
+    $form['reset'] = array(
+      '#type' => 'submit',
+      '#name' => 'reset',
+      '#value' => t('Reset'),
+      '#submit' => array('rent_cars_settings_form_search_api_ranges_submit'),
+      '#attributes' => array('class' => array('rent-cars-reset-prise')),
+    );
+  }
 }
 
 /**
@@ -128,4 +168,13 @@ function rent_cars_settings_get_field_value($node = NULL, $field = NULL) {
     }
   }
   return '';
+}
+
+function rent_cars_settings_redirect_anonymous() {
+  drupal_set_message(t('Before booking a car You need <a href="/user">login</a> or <a href="/user/register">sign up</a>'));
+  drupal_goto('user');
+}
+
+function rent_cars_settings_form_search_api_ranges_submit($form, &$form_state) {
+  drupal_goto('cars');
 }
